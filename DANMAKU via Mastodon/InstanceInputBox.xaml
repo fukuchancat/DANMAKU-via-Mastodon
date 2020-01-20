@@ -1,0 +1,19 @@
+﻿<Window x:Class="DANMAKU_via_Mastodon.InstanceInputBox"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:local="clr-namespace:DANMAKU_via_Mastodon"
+		mc:Ignorable="d"
+        Title="DANMAKU via Mastodon" Height="140" Width="300" Icon="pack://siteoforigin:,,,/app.ico">
+	<Grid>
+		<StackPanel>
+			<Label x:Name="Label" Content="Please enter the instance to log in. (e.g., pawoo.net, mstdn.jp.)"/>
+			<TextBox x:Name="TextBox" Height="30" Margin="5"/>
+			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+				<Button x:Name="OKButton" Content="OK" Width="70" Margin="5" Click="OKButton_Click"/>
+				<Button x:Name="CancelButton" Content="Cancel" Width="70" Margin="5" Click="CancelButton_Click"/>
+			</StackPanel>
+		</StackPanel>
+	</Grid>
+</Window>

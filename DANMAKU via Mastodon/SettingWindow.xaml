@@ -1,0 +1,181 @@
+﻿<Window x:Class="DANMAKU_via_Mastodon.SettingWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+		xmlns:properties="clr-namespace:DANMAKU_via_Mastodon.Properties"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:DANMAKU_via_Mastodon"
+		xmlns:streaming ="clr-namespace:TootNet.Streaming;assembly=TootNet"
+        mc:Ignorable="d"
+        Title="Settings" Height="500" Width="300" Icon="pack://siteoforigin:,,,/app.ico">
+	<Window.Resources>
+		<local:InverseBooleanConverter x:Key="InverseBool" />
+		<local:EnumToBooleanConverter x:Key="EnumToBool" />
+		<local:StringToFontFamilyConverter x:Key="StringToFontFamily" />
+		<properties:Settings x:Key="Settings" />
+	</Window.Resources>
+	<Grid Margin="3">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="auto" />
+			<RowDefinition Height="auto" />
+			<RowDefinition Height="auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+		<Border BorderBrush="Gray" BorderThickness="1" Margin="2">
+			<StackPanel Margin="2">
+				<StackPanel Margin="3">
+					<RadioButton x:Name="User" GroupName="StreamingType" Content="{x:Static properties:Resources.User}">
+						<RadioButton.IsChecked>
+							<Binding Path="Default.StreamingType" Source="{StaticResource Settings}" Converter="{StaticResource EnumToBool}" ConverterParameter="{x:Static streaming:StreamingType.User}"/>
+						</RadioButton.IsChecked>
+					</RadioButton>
+				</StackPanel>
+				<StackPanel Margin="3">
+					<RadioButton x:Name="Public" GroupName="StreamingType" Content="{x:Static properties:Resources.Public}">
+						<RadioButton.IsChecked>
+							<Binding Path="Default.StreamingType" Source="{StaticResource Settings}" Converter="{StaticResource EnumToBool}" ConverterParameter="{x:Static streaming:StreamingType.Public}"/>
+						</RadioButton.IsChecked>
+					</RadioButton>
+					<StackPanel Margin="20,5,0,0">
+						<RadioButton x:Name="FederatedTimeline" GroupName="StreamingTarget" Content="{x:Static properties:Resources.FederatedTimeline}">
+							<RadioButton.IsEnabled>
+								<Binding Path="IsChecked" ElementName="Public"/>
+							</RadioButton.IsEnabled>
+							<RadioButton.IsChecked>
+								<Binding Path="Local" Converter="{StaticResource InverseBool}"/>
+							</RadioButton.IsChecked>
+						</RadioButton>
+						<RadioButton x:Name="LocalTimeline" GroupName="StreamingTarget" Content="{x:Static properties:Resources.LocalTimeline}">
+							<RadioButton.IsEnabled>
+								<Binding Path="IsChecked" ElementName="Public"/>
+							</RadioButton.IsEnabled>
+							<RadioButton.IsChecked>
+								<Binding Path="Local"/>
+							</RadioButton.IsChecked>
+						</RadioButton>
+					</StackPanel>
+				</StackPanel>
+				<StackPanel Margin="3">
+					<RadioButton x:Name="Hashtag" GroupName="StreamingType" Content="{x:Static properties:Resources.Hashtag}">
+						<RadioButton.IsChecked>
+							<Binding Path="Default.StreamingType" Source="{StaticResource Settings}" Converter="{StaticResource EnumToBool}" ConverterParameter="{x:Static streaming:StreamingType.Hashtag}"/>
+						</RadioButton.IsChecked>
+					</RadioButton>
+					<Grid Margin="20,5,0,0">
+						<Grid.ColumnDefinitions>
+							<ColumnDefinition Width="Auto"/>
+							<ColumnDefinition Width="*"/>
+						</Grid.ColumnDefinitions>
+						<TextBlock Margin="0,0,5,0">#</TextBlock>
+						<TextBox IsEnabled="{Binding IsChecked, ElementName=Hashtag}" Grid.Column="1">
+							<TextBox.Text>
+								<Binding Mode="TwoWay" Path="Query">
+									<Binding.ValidationRules>
+										<local:EmptyValidationRule ValidatesOnTargetUpdated="True" />
+									</Binding.ValidationRules>
+								</Binding>
+							</TextBox.Text>
+							<TextBox.Style>
+								<Style TargetType="{x:Type TextBox}">
+									<Style.Triggers>
+										<Trigger Property="IsEnabled" Value="False">
+											<Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+										</Trigger>
+									</Style.Triggers>
+								</Style>
+							</TextBox.Style>
+						</TextBox>
+					</Grid>
+				</StackPanel>
+				<StackPanel Margin="3">
+					<RadioButton x:Name="List" GroupName="StreamingType" Content="{x:Static properties:Resources.List}">
+						<RadioButton.IsChecked>
+							<Binding Path="Default.StreamingType" Source="{StaticResource Settings}" Converter="{StaticResource EnumToBool}" ConverterParameter="{x:Static streaming:StreamingType.List}"/>
+						</RadioButton.IsChecked>
+					</RadioButton>
+					<TextBox Margin="20,5,0,0" IsEnabled="{Binding IsChecked, ElementName=List}">
+						<TextBox.Text>
+							<Binding Mode="TwoWay" Path="Query">
+								<Binding.ValidationRules>
+									<local:EmptyValidationRule ValidatesOnTargetUpdated="True" />
+								</Binding.ValidationRules>
+							</Binding>
+						</TextBox.Text>
+						<TextBox.Style>
+							<Style TargetType="{x:Type TextBox}">
+								<Style.Triggers>
+									<Trigger Property="IsEnabled" Value="False">
+										<Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
+									</Trigger>
+								</Style.Triggers>
+							</Style>
+						</TextBox.Style>
+					</TextBox>
+				</StackPanel>
+			</StackPanel>
+		</Border>
+		<Border Grid.Row="1" BorderBrush="Gray" BorderThickness="1" Margin="2">
+			<Grid VerticalAlignment="Top" Margin="3">
+				<Grid.RowDefinitions>
+					<RowDefinition Height="auto" />
+					<RowDefinition Height="auto" />
+					<RowDefinition Height="auto" />
+					<RowDefinition Height="auto" />
+					<RowDefinition Height="auto" />
+				</Grid.RowDefinitions>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="auto" />
+					<ColumnDefinition Width="*" />
+				</Grid.ColumnDefinitions>
+				<TextBlock Text="FontFamily" Margin="2" VerticalAlignment="Center" />
+				<TextBlock Text="Color" Grid.Row="1" Margin="2" VerticalAlignment="Center" />
+				<TextBlock Text="FontSize (px)" Grid.Row="2" Margin="2" VerticalAlignment="Center" />
+				<TextBlock Text="FontWeight" Grid.Row="3" Margin="2" VerticalAlignment="Center" />
+				<TextBlock Text="FontStyle" Grid.Row="4" Margin="2" VerticalAlignment="Center" />
+				<ComboBox Grid.Column="1" Margin="2" SelectedItem="{Binding Default.FontFamily, Source={StaticResource Settings}, Converter={StaticResource StringToFontFamily}}" ItemsSource="{Binding Source={x:Static Fonts.SystemFontFamilies}}">
+					<ComboBox.ItemTemplate>
+						<DataTemplate>
+							<TextBlock Text="{Binding}" FontFamily="{Binding}" Height="16"/>
+						</DataTemplate>
+					</ComboBox.ItemTemplate>
+				</ComboBox>
+				<ComboBox Grid.Column="1" Grid.Row="1" Margin="2" SelectedValue="{Binding Default.Color, Source={StaticResource Settings}}" SelectedValuePath="Content">
+					<ComboBoxItem Background="White" Content="White"/>
+					<ComboBoxItem Background="Red" Content="Red"/>
+					<ComboBoxItem Background="Pink" Content="Pink"/>
+					<ComboBoxItem Background="Orange" Content="Orange"/>
+					<ComboBoxItem Background="Yellow" Content="Yellow"/>
+					<ComboBoxItem Background="Green" Content="Green"/>
+					<ComboBoxItem Background="Cyan" Content="Cyan"/>
+					<ComboBoxItem Background="Blue" Content="Blue"/>
+					<ComboBoxItem Background="Purple" Content="Purple"/>
+					<ComboBoxItem Foreground="White" Background="Black" Content="Black"/>
+				</ComboBox>
+				<TextBox Grid.Column="1" Grid.Row="2" Margin="2" InputMethod.IsInputMethodEnabled="False" Text="{Binding Default.FontSize, Source={StaticResource Settings}}" Height="22" />
+				<ComboBox Grid.Column="1" Grid.Row="3" Margin="2" SelectedValue="{Binding Default.FontWeight, Source={StaticResource Settings}}" SelectedValuePath="Content">
+					<ComboBoxItem FontWeight="Thin" Content="{x:Static Member=FontWeights.Thin}" />
+					<ComboBoxItem FontWeight="ExtraLight" Content="{x:Static Member=FontWeights.ExtraLight}" />
+					<ComboBoxItem FontWeight="Light" Content="{x:Static Member=FontWeights.Light}" />
+					<ComboBoxItem FontWeight="Normal" Content="{x:Static Member=FontWeights.Normal}" />
+					<ComboBoxItem FontWeight="Medium" Content="{x:Static Member=FontWeights.Medium}" />
+					<ComboBoxItem FontWeight="DemiBold" Content="{x:Static Member=FontWeights.DemiBold}" />
+					<ComboBoxItem FontWeight="Bold" Content="{x:Static Member=FontWeights.Bold}" />
+					<ComboBoxItem FontWeight="ExtraBold" Content="{x:Static Member=FontWeights.ExtraBold}" />
+					<ComboBoxItem FontWeight="Black" Content="{x:Static Member=FontWeights.Black}" />
+					<ComboBoxItem FontWeight="ExtraBlack" Content="{x:Static Member=FontWeights.ExtraBlack}" />
+				</ComboBox>
+				<ComboBox Grid.Column="1" Grid.Row="4" Margin="2" SelectedValue="{Binding Default.FontStyle, Source={StaticResource Settings}}" SelectedValuePath="Content">
+					<ComboBoxItem FontStyle="Normal" Content="{x:Static Member=FontStyles.Normal}" />
+					<ComboBoxItem FontStyle="Italic" Content="{x:Static Member=FontStyles.Italic}" />
+					<ComboBoxItem FontStyle="Oblique" Content="{x:Static Member=FontStyles.Oblique}" />
+				</ComboBox>
+			</Grid>
+		</Border>
+		<Border Grid.Row="2" BorderBrush="Gray" BorderThickness="1" Margin="2">
+			<StackPanel VerticalAlignment="Top" Margin="2">
+				<Button Content="{x:Static properties:Resources.ReAuth}" Margin="3" Click="ReAuthButton_Click" />
+			</StackPanel>
+		</Border>
+		<Button x:Name="OKButton" Content="OK" Grid.Row="3" VerticalAlignment="Bottom" Margin="2" Click="OKButton_Click" />
+	</Grid>
+</Window>
