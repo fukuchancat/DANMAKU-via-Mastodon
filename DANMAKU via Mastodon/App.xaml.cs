@@ -1,7 +1,9 @@
 ﻿using System.Drawing;
+using System.Threading;
 using System.Windows;
 using System.Windows.Forms;
 using Application = System.Windows.Application;
+using MessageBox = System.Windows.MessageBox;
 
 namespace DANMAKU_via_Mastodon
 {
@@ -10,8 +12,17 @@ namespace DANMAKU_via_Mastodon
     /// </summary>
     public partial class App : Application
     {
+        /// <summary>
+        /// タスクバーに表示するアイコン
+        /// </summary>
         private NotifyIcon notifyIcon;
 
+        private Semaphore semaphore;
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnStartup(StartupEventArgs e)
         {
             notifyIcon = new NotifyIcon
@@ -20,6 +31,14 @@ namespace DANMAKU_via_Mastodon
                 Icon = new Icon("app.ico"),
                 Visible = true
             };
+            semaphore = new Semaphore(1, 1, "DANMAKU via Mastodon", out bool createdNew);
+
+            if (!createdNew)
+            {
+                // if the application is already running, show dialog and exit
+                MessageBox.Show("Application is already running!", "DANMAKU via Mastodon");
+                Shutdown();
+            }
 
             // initializing context menu
             ContextMenuStrip menuStrip = new ContextMenuStrip();
@@ -44,6 +63,7 @@ namespace DANMAKU_via_Mastodon
         protected override void OnExit(ExitEventArgs e)
         {
             notifyIcon.Dispose();
+            semaphore.Dispose();
             base.OnExit(e);
         }
     }

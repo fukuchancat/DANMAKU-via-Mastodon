@@ -17,7 +17,7 @@ namespace DANMAKU_via_Mastodon
 
         private void OKButton_Click(object sender, RoutedEventArgs e)
         {
-            Authorize authorize = new Authorize()
+            Authorize authorize = new Authorize
             {
                 Instance = Default.Instance,
                 ClientId = Default.ClientId,

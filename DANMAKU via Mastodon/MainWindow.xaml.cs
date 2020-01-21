@@ -170,7 +170,7 @@ namespace DANMAKU_via_Mastodon
                 storyboard.Children.Add(doubleAnimation);
                 storyboard.Completed += (s, e) => Root.Children.Remove(label);
 
-                label.Loaded += (sender, e) =>
+                label.Loaded += (s, e) =>
                 {
                     doubleAnimation.To = -label.ActualWidth;
                     storyboard.Begin();
