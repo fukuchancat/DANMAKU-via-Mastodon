@@ -119,14 +119,14 @@ namespace DANMAKU_via_Mastodon
 
             for (int i = pos; i < pos + span && i < Spaces.Length; i++)
             {
-                Spaces[pos]++;
+                Spaces[i]++;
             }
 
             Task.Delay(5000).ContinueWith(t =>
             {
                 for (int i = pos; i < pos + span && i < Spaces.Length; i++)
                 {
-                    Spaces[pos]--;
+                    Spaces[i]--;
                 }
             });
 
