@@ -24,39 +24,39 @@
 		<Border BorderBrush="Gray" BorderThickness="1" Margin="2">
 			<StackPanel Margin="2">
 				<StackPanel Margin="3">
-					<RadioButton x:Name="User" GroupName="StreamingType" Content="{x:Static properties:Resources.User}">
+					<RadioButton x:Name="User" Content="{x:Static properties:Resources.User}">
 						<RadioButton.IsChecked>
 							<Binding Path="Default.StreamingType" Source="{StaticResource Settings}" Converter="{StaticResource EnumToBool}" ConverterParameter="{x:Static streaming:StreamingType.User}"/>
 						</RadioButton.IsChecked>
 					</RadioButton>
 				</StackPanel>
 				<StackPanel Margin="3">
-					<RadioButton x:Name="Public" GroupName="StreamingType" Content="{x:Static properties:Resources.Public}">
+					<RadioButton x:Name="Public" Content="{x:Static properties:Resources.Public}">
 						<RadioButton.IsChecked>
 							<Binding Path="Default.StreamingType" Source="{StaticResource Settings}" Converter="{StaticResource EnumToBool}" ConverterParameter="{x:Static streaming:StreamingType.Public}"/>
 						</RadioButton.IsChecked>
 					</RadioButton>
 					<StackPanel Margin="20,5,0,0">
-						<RadioButton x:Name="FederatedTimeline" GroupName="StreamingTarget" Content="{x:Static properties:Resources.FederatedTimeline}">
+						<RadioButton x:Name="FederatedTimeline" Content="{x:Static properties:Resources.FederatedTimeline}">
 							<RadioButton.IsEnabled>
 								<Binding Path="IsChecked" ElementName="Public"/>
 							</RadioButton.IsEnabled>
 							<RadioButton.IsChecked>
-								<Binding Path="Local" Converter="{StaticResource InverseBool}"/>
+								<Binding Path="Default.Local" Source="{StaticResource Settings}" Converter="{StaticResource InverseBool}"/>
 							</RadioButton.IsChecked>
 						</RadioButton>
-						<RadioButton x:Name="LocalTimeline" GroupName="StreamingTarget" Content="{x:Static properties:Resources.LocalTimeline}">
+						<RadioButton x:Name="LocalTimeline" Content="{x:Static properties:Resources.LocalTimeline}">
 							<RadioButton.IsEnabled>
 								<Binding Path="IsChecked" ElementName="Public"/>
 							</RadioButton.IsEnabled>
 							<RadioButton.IsChecked>
-								<Binding Path="Local"/>
+								<Binding Path="Default.Local" Source="{StaticResource Settings}"/>
 							</RadioButton.IsChecked>
 						</RadioButton>
 					</StackPanel>
 				</StackPanel>
 				<StackPanel Margin="3">
-					<RadioButton x:Name="Hashtag" GroupName="StreamingType" Content="{x:Static properties:Resources.Hashtag}">
+					<RadioButton x:Name="Hashtag" Content="{x:Static properties:Resources.Hashtag}">
 						<RadioButton.IsChecked>
 							<Binding Path="Default.StreamingType" Source="{StaticResource Settings}" Converter="{StaticResource EnumToBool}" ConverterParameter="{x:Static streaming:StreamingType.Hashtag}"/>
 						</RadioButton.IsChecked>
@@ -88,7 +88,7 @@
 					</Grid>
 				</StackPanel>
 				<StackPanel Margin="3">
-					<RadioButton x:Name="List" GroupName="StreamingType" Content="{x:Static properties:Resources.List}">
+					<RadioButton x:Name="List" Content="{x:Static properties:Resources.List}">
 						<RadioButton.IsChecked>
 							<Binding Path="Default.StreamingType" Source="{StaticResource Settings}" Converter="{StaticResource EnumToBool}" ConverterParameter="{x:Static streaming:StreamingType.List}"/>
 						</RadioButton.IsChecked>

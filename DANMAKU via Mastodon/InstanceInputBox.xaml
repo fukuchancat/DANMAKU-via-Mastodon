@@ -5,10 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 		xmlns:local="clr-namespace:DANMAKU_via_Mastodon"
 		mc:Ignorable="d"
-        Title="DANMAKU via Mastodon" Height="140" Width="300" Icon="pack://siteoforigin:,,,/app.ico">
+        Title="DANMAKU via Mastodon" Height="150" Width="400" Icon="pack://siteoforigin:,,,/app.ico">
 	<Grid>
 		<StackPanel>
-			<Label x:Name="Label" Content="Please enter the instance to log in. (e.g., pawoo.net, mstdn.jp.)"/>
+			<Label x:Name="Label" Content="Please enter the instance to log in. (e.g., pawoo.net, mstdn.jp.)" Margin="5"/>
 			<TextBox x:Name="TextBox" Height="30" Margin="5"/>
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
 				<Button x:Name="OKButton" Content="OK" Width="70" Margin="5" Click="OKButton_Click"/>

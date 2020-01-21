@@ -4,7 +4,9 @@ using System.Reactive.Concurrency;
 using System.Reactive.Linq;
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using System.Web;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Interop;
@@ -76,7 +78,7 @@ namespace DANMAKU_via_Mastodon
                     observable = tokens.Streaming.HashtagAsObservable(tag => Default.Tag);
                     break;
                 case StreamingType.Public:
-                    observable = tokens.Streaming.PublicAsObservable();
+                    observable = tokens.Streaming.PublicAsObservable(local => Default.Local);
                     break;
                 case StreamingType.List:
                     observable = tokens.Streaming.ListAsObservable(list => Default.List);
@@ -90,20 +92,17 @@ namespace DANMAKU_via_Mastodon
             return observable
                 .SubscribeOn(ThreadPoolScheduler.Instance)
                 .Where(x => x.Type == StreamingMessage.MessageType.Status)
-                .Subscribe(x => Add(x.Status.Content));
+                .Select(x => ToPlainText(x.Status.Content))
+                .Subscribe(t => FireLabel(t));
         }
 
-        /// <summary>
-        /// add received tweet to the screen
-        /// </summary>
-        /// <param name="str">tweet text</param>
-        private void Add(string str)
+        private string ToPlainText(string html)
         {
-            int line = str.Count(c => c == '\n') + 1;
-            int pos = CalcPos(line);
-
-            FillSpaces(line, pos);
-            FireLabel(str, pos);
+            html = html.Replace("<br />", "\n");
+            html = html.Replace("</p><p>", "\n\n");
+            html = Regex.Replace(html, "<.+?>", "");
+            html = HttpUtility.HtmlDecode(html);
+            return html.TrimEnd();
         }
 
         /// <summary>
@@ -111,69 +110,27 @@ namespace DANMAKU_via_Mastodon
         /// </summary>
         /// <param name="line">number of lines of tweet</param>
         /// <returns>position to draw tweet</returns>
-        private int CalcPos(int line)
+        private int ReservePosition(string str)
         {
-            int pos = 0;
+            int span = str.Count(c => c == '\n') + 1;
+            int pos = span < Spaces.Length ? Enumerable.Range(0, Spaces.Length - span)
+                    .OrderBy(i => Enumerable.Range(i, span).Select(j => Spaces[j]).Sum())
+                    .First() : 0;
 
-            if (Spaces.Length > line)
+            for (int i = pos; i < pos + span && i < Spaces.Length; i++)
             {
-                int i = 0;
-                bool flag = true;
-
-                while (flag)
-                {
-                    for (int j = 0; j < Spaces.Length - line; j++)
-                    {
-                        int sum = 0;
-                        for (int k = 0; k < line && k < Spaces.Length; k++)
-                        {
-                            sum += Spaces[j + k];
-                        }
-
-                        if (sum <= i)
-                        {
-                            pos = j;
-
-                            flag = false;
-                            break;
-                        }
-                    }
-                    i++;
-                }
+                Spaces[pos]++;
             }
+
+            Task.Delay(5000).ContinueWith(t =>
+            {
+                for (int i = pos; i < pos + span && i < Spaces.Length; i++)
+                {
+                    Spaces[pos]--;
+                }
+            });
 
             return pos;
-        }
-
-        /// <summary>
-        /// occupy spaces to draw a tweet
-        /// </summary>
-        /// <param name="line">number of lines of the tweet</param>
-        /// <param name="pos">position to draw the tweet</param>
-        private void FillSpaces(int line, int pos)
-        {
-            for (int k = 0; k < line && k < Spaces.Length; k++)
-            {
-                Spaces[pos + k]++;
-            }
-
-            Task.Delay(5000).ContinueWith(t => ClearSpaces(line, pos));
-        }
-
-        /// <summary>
-        /// clear the spaces
-        /// </summary>
-        /// <param name="line">number of lines of the tweet</param>
-        /// <param name="pos">position to draw the tweet</param>
-        private void ClearSpaces(int line, int pos)
-        {
-            for (int k = 0; k < line && k < Spaces.Length; k++)
-            {
-                if (Spaces[pos + k] > 0)
-                {
-                    Spaces[pos + k]--;
-                }
-            }
         }
 
         /// <summary>
@@ -181,8 +138,10 @@ namespace DANMAKU_via_Mastodon
         /// </summary>
         /// <param name="str">tweet text</param>
         /// <param name="pos">position to draw the tweet</param>
-        private void FireLabel(string str, int pos)
+        private void FireLabel(string str)
         {
+            int pos = ReservePosition(str);
+
             Root.Dispatcher.Invoke(() =>
             {
                 // create label
@@ -191,16 +150,17 @@ namespace DANMAKU_via_Mastodon
                     Foreground = (SolidColorBrush)new BrushConverter().ConvertFromString(Default.Color),
                     Content = str
                 };
+
                 Canvas.SetBottom(label, pos * LineHeight);
                 Root.Children.Add(label);
 
                 // set animation
                 DoubleAnimation doubleAnimation = new DoubleAnimation
                 {
-                    From = SystemParameters.PrimaryScreenWidth,
-                    To = str.Length * -100,
+                    From = ActualWidth,
                     Duration = new Duration(TimeSpan.FromSeconds(10))
                 };
+
                 Storyboard.SetTargetProperty(doubleAnimation, new PropertyPath("(Canvas.Left)"));
                 Storyboard.SetTarget(doubleAnimation, label);
                 Storyboard storyboard = new Storyboard
@@ -208,8 +168,13 @@ namespace DANMAKU_via_Mastodon
                     FillBehavior = FillBehavior.HoldEnd
                 };
                 storyboard.Children.Add(doubleAnimation);
-                storyboard.Completed += (s, e) => { Root.Children.Remove(label); };
-                storyboard.Begin();
+                storyboard.Completed += (s, e) => Root.Children.Remove(label);
+
+                label.Loaded += (sender, e) =>
+                {
+                    doubleAnimation.To = -label.ActualWidth;
+                    storyboard.Begin();
+                };
             });
         }
 
