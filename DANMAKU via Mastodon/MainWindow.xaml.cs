@@ -23,25 +23,45 @@ namespace DANMAKU_via_Mastodon
     /// </summary>
     public partial class MainWindow : Window
     {
+        /// <summary>
+        /// Array for calculating Label display position
+        /// </summary>
         public int[] Spaces;
+
+        /// <summary>
+        /// Line height
+        /// </summary>
         public double LineHeight;
+
+        /// <summary>
+        /// Disposable for Streaming reception
+        /// </summary>
         public IDisposable Disposable;
 
+        /// <summary>
+        /// Constractor
+        /// </summary>
         public MainWindow()
         {
             InitializeComponent();
 
+            // Set font
             PropertyInfo propertyInfo = typeof(FontStyles).GetProperty(Default.FontStyle, BindingFlags.Static | BindingFlags.Public);
             FontFamily = new FontFamily(Default.FontFamily);
             FontWeight = (FontWeight)new FontWeightConverter().ConvertFromString(Default.FontWeight);
             FontSize = Default.FontSize;
             FontStyle = (FontStyle)propertyInfo.GetValue(null, null);
 
+            // Initialize variables
             LineHeight = FontFamily.LineSpacing * FontSize;
             Spaces = new int[(int)(SystemParameters.PrimaryScreenHeight / LineHeight)];
             Disposable = CreateDisposable();
         }
 
+        /// <summary>
+        /// Open input windows if necessary
+        /// </summary>
+        /// <returns>Token</returns>
         private Tokens CreateTokens()
         {
             while (string.IsNullOrEmpty(Default.Instance) || string.IsNullOrEmpty(Default.AccessToken) || string.IsNullOrEmpty(Default.ClientId) || string.IsNullOrEmpty(Default.ClientSecret))
@@ -56,30 +76,37 @@ namespace DANMAKU_via_Mastodon
         }
 
         /// <summary>
-        /// connect to twitter streaming
+        /// Create disposable for Streaming reception
         /// </summary>
+        /// <returns>Disposable</returns>
         public IDisposable CreateDisposable()
         {
+            // Issue token
             Tokens tokens = CreateTokens();
 
-            // if the query is empty, connect to timeline
+            // if the query is empty, connect to user timeline
             if ((Default.StreamingType == StreamingType.Hashtag && string.IsNullOrWhiteSpace(Default.Tag)) || (Default.StreamingType == StreamingType.List && string.IsNullOrWhiteSpace(Default.List)))
             {
-                Default.StreamingType = 0;
+                Default.StreamingType = StreamingType.User;
             }
 
+            // Create observable according to the settings
             IObservable<StreamingMessage> observable;
             switch (Default.StreamingType)
             {
+                // user timeline
                 case StreamingType.User:
                     observable = tokens.Streaming.UserAsObservable();
                     break;
+                // hashtag
                 case StreamingType.Hashtag:
                     observable = tokens.Streaming.HashtagAsObservable(tag => Default.Tag);
                     break;
+                // all public toots
                 case StreamingType.Public:
                     observable = tokens.Streaming.PublicAsObservable(local => Default.Local);
                     break;
+                // list
                 case StreamingType.List:
                     observable = tokens.Streaming.ListAsObservable(list => Default.List);
                     break;
@@ -96,6 +123,11 @@ namespace DANMAKU_via_Mastodon
                 .Subscribe(t => FireLabel(t));
         }
 
+        /// <summary>
+        /// Convert html string to plain text
+        /// </summary>
+        /// <param name="html">html string</param>
+        /// <returns>Plain text</returns>
         private string ToPlainText(string html)
         {
             html = html.Replace("<br />", "\n");
@@ -106,22 +138,27 @@ namespace DANMAKU_via_Mastodon
         }
 
         /// <summary>
-        /// calclate the position to draw a tweet
+        /// Secure label display position
         /// </summary>
-        /// <param name="line">number of lines of tweet</param>
-        /// <returns>position to draw tweet</returns>
+        /// <param name="str">text</param>
+        /// <returns>secured position index</returns>
         private int ReservePosition(string str)
         {
+            // Number of lines of text
             int span = str.Count(c => c == '\n') + 1;
+
+            // Label display position
             int pos = span < Spaces.Length ? Enumerable.Range(0, Spaces.Length - span)
                     .OrderBy(i => Enumerable.Range(i, span).Select(j => Spaces[j]).Sum())
                     .First() : 0;
 
+            // Secure position
             for (int i = pos; i < pos + span && i < Spaces.Length; i++)
             {
                 Spaces[i]++;
             }
 
+            // Release position after 5 seconds
             Task.Delay(5000).ContinueWith(t =>
             {
                 for (int i = pos; i < pos + span && i < Spaces.Length; i++)
@@ -134,14 +171,15 @@ namespace DANMAKU_via_Mastodon
         }
 
         /// <summary>
-        /// draw tweet
+        /// Fire label to screen
         /// </summary>
-        /// <param name="str">tweet text</param>
-        /// <param name="pos">position to draw the tweet</param>
+        /// <param name="str">text</param>
         private void FireLabel(string str)
         {
+            // label position index
             int pos = ReservePosition(str);
 
+            // Processed in dispatcher for UI control
             Root.Dispatcher.Invoke(() =>
             {
                 // create label
@@ -151,16 +189,18 @@ namespace DANMAKU_via_Mastodon
                     Content = str
                 };
 
+                // set label positon and add to canvas
                 Canvas.SetBottom(label, pos * LineHeight);
                 Root.Children.Add(label);
 
-                // set animation
+                // initialize animation
                 DoubleAnimation doubleAnimation = new DoubleAnimation
                 {
                     From = ActualWidth,
                     Duration = new Duration(TimeSpan.FromSeconds(10))
                 };
 
+                // initialize storyboard
                 Storyboard.SetTargetProperty(doubleAnimation, new PropertyPath("(Canvas.Left)"));
                 Storyboard.SetTarget(doubleAnimation, label);
                 Storyboard storyboard = new Storyboard
@@ -168,18 +208,21 @@ namespace DANMAKU_via_Mastodon
                     FillBehavior = FillBehavior.HoldEnd
                 };
                 storyboard.Children.Add(doubleAnimation);
+
+                // Remove label after animation ends
                 storyboard.Completed += (s, e) => Root.Children.Remove(label);
 
+                // Processed after loded to calculate label width
                 label.Loaded += (s, e) =>
                 {
                     doubleAnimation.To = -label.ActualWidth;
-                    storyboard.Begin();
+                    storyboard.Begin(); // start animation
                 };
             });
         }
 
         /// <summary>
-        /// make the window click-through
+        /// Make the window click-through
         /// </summary>
         /// <param name="e"></param>
         protected override void OnSourceInitialized(EventArgs e)
@@ -194,6 +237,10 @@ namespace DANMAKU_via_Mastodon
             base.OnSourceInitialized(e);
         }
 
+        /// <summary>
+        /// End stream on window closed
+        /// </summary>
+        /// <param name="e"></param>
         protected override void OnClosed(EventArgs e)
         {
             if (Disposable != null)
@@ -203,6 +250,9 @@ namespace DANMAKU_via_Mastodon
             base.OnClosed(e);
         }
 
+        /// <summary>
+        /// Native Methods required to make windows click-through
+        /// </summary>
         private static class NativeMethods
         {
             public const int WS_EX_TRANSPARENT = 0x00000020;

@@ -13,12 +13,20 @@ namespace DANMAKU_via_Mastodon
     /// </summary>
     public partial class SettingWindow : Window
     {
+        /// <summary>
+        /// Constractor
+        /// </summary>
         public SettingWindow()
         {
-            Application.Current.MainWindow.Close();
+            Application.Current.MainWindow.Close(); // Close main window
             InitializeComponent();
         }
 
+        /// <summary>
+        /// Processing when ReAuth button is clicked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ReAuthButton_Click(object sender, RoutedEventArgs e)
         {
             do
@@ -33,13 +41,18 @@ namespace DANMAKU_via_Mastodon
             while (string.IsNullOrEmpty(Default.Instance) || string.IsNullOrEmpty(Default.AccessToken) || string.IsNullOrEmpty(Default.ClientId) || string.IsNullOrEmpty(Default.ClientSecret));
         }
 
+        /// <summary>
+        /// Processing when OK button is clicked
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void OKButton_Click(object sender, RoutedEventArgs e)
         {
             Close();
         }
 
         /// <summary>
-        /// restart streaming when closing the window
+        /// Re-open main window when closed setting window
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e"></param>
@@ -54,7 +67,7 @@ namespace DANMAKU_via_Mastodon
     }
 
     /// <summary>
-    /// validation check for empty textbox
+    /// Validation check for empty textbox
     /// </summary>
     public class EmptyValidationRule : ValidationRule
     {
@@ -70,6 +83,9 @@ namespace DANMAKU_via_Mastodon
         }
     }
 
+    /// <summary>
+    /// Converter that inverts the bool
+    /// </summary>
     public class InverseBooleanConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -83,6 +99,9 @@ namespace DANMAKU_via_Mastodon
         }
     }
 
+    /// <summary>
+    /// Converter to convert enum to bool for Binding
+    /// </summary>
     public class EnumToBooleanConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
@@ -96,6 +115,9 @@ namespace DANMAKU_via_Mastodon
         }
     }
 
+    /// <summary>
+    /// Converter that converts String to FontFamily
+    /// </summary>
     public class StringToFontFamilyConverter : IValueConverter
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
