@@ -33,11 +33,21 @@ namespace DANMAKU_via_Mastodon
                 ClientSecret = Default.ClientSecret
             };
 
-            // Create token with code authentication
-            Tokens tokens = authorize.AuthorizeWithCode(TextBox.Text).Result;
+            try
+            {
+                // Create token with code authentication
+                Tokens tokens = authorize.AuthorizeWithCode(TextBox.Text).Result;
+
+                // Set access token
+                Default.AccessToken = tokens.AccessToken;
+            }
+            catch
+            {
+                Default.AccessToken = null;
+            }
 
             // Save access token
-            Default.AccessToken = tokens.AccessToken;
+            Default.Save();
 
             // Set DialogResult true and close window
             DialogResult = true;
@@ -53,6 +63,8 @@ namespace DANMAKU_via_Mastodon
         {
             // Set instance null and save
             Default.Instance = null;
+            Default.ClientId = null;
+            Default.ClientSecret = null;
             Default.Save();
 
             // Set DialogResult false and close window

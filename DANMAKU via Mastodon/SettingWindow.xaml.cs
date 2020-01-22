@@ -35,7 +35,7 @@ namespace DANMAKU_via_Mastodon
                 {
                     new InstanceInputBox().ShowDialog();
                 }
-                while (string.IsNullOrEmpty(Default.Instance));
+                while (string.IsNullOrEmpty(Default.Instance) || string.IsNullOrEmpty(Default.ClientId) || string.IsNullOrEmpty(Default.ClientSecret));
                 new CodeInputBox().ShowDialog();
             }
             while (string.IsNullOrEmpty(Default.Instance) || string.IsNullOrEmpty(Default.AccessToken) || string.IsNullOrEmpty(Default.ClientId) || string.IsNullOrEmpty(Default.ClientSecret));

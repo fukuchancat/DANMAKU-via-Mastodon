@@ -11,7 +11,7 @@
 			<Label x:Name="Label" Content="Please enter the instance to log in. (e.g., pawoo.net, mstdn.jp.)" Margin="5"/>
 			<TextBox x:Name="TextBox" Height="30" Margin="5"/>
 			<StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-				<Button x:Name="OKButton" Content="OK" Width="70" Margin="5" Click="OKButton_Click"/>
+				<Button x:Name="OKButton" Content="OK" Width="70" Margin="5" Click="OKButton_Click" IsDefault="True"/>
 				<Button x:Name="CancelButton" Content="Cancel" Width="70" Margin="5" Click="CancelButton_Click"/>
 			</StackPanel>
 		</StackPanel>

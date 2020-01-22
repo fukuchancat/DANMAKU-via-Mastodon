@@ -26,26 +26,30 @@ namespace DANMAKU_via_Mastodon
         /// <param name="e"></param>
         private void OKButton_Click(object sender, RoutedEventArgs e)
         {
-            // Set instance to textbox input
-            Default.Instance = TextBox.Text;
-
             try
             {
                 // Issue ClientID and ClientSecrert of the instance
                 Authorize authorize = new Authorize();
-                authorize.CreateApp(Default.Instance, "DANMAKU via Mastodon", Scope.Read).Wait();
+                authorize.CreateApp(TextBox.Text, "DANMAKU via Mastodon", Scope.Read).Wait();
 
-                // Save ClientID and ClientSecrert
+                // Set settings
+                Default.Instance = TextBox.Text;
                 Default.ClientId = authorize.ClientId;
                 Default.ClientSecret = authorize.ClientSecret;
-                Default.Save();
+                Default.AccessToken = null;
 
                 // Open authentication url
                 Process.Start(authorize.GetAuthorizeUri());
             }
             catch
             {
+                Default.Instance = null;
+                Default.ClientId = null;
+                Default.ClientSecret = null;
             }
+
+            // Save settings
+            Default.Save();
 
             // Set DialogResult true and close window
             DialogResult = true;
