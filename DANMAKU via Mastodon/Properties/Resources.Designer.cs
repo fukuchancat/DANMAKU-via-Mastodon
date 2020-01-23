@@ -61,7 +61,7 @@ namespace DANMAKU_via_Mastodon.Properties {
         }
         
         /// <summary>
-        ///   Federated Timeline に類似しているローカライズされた文字列を検索します。
+        ///   from federated timeline に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string FederatedTimeline {
             get {
@@ -70,7 +70,7 @@ namespace DANMAKU_via_Mastodon.Properties {
         }
         
         /// <summary>
-        ///   Receive tweets of your timeline に類似しているローカライズされた文字列を検索します。
+        ///   Receive toots containing a specific hashtag に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string Hashtag {
             get {
@@ -79,7 +79,7 @@ namespace DANMAKU_via_Mastodon.Properties {
         }
         
         /// <summary>
-        ///   List に類似しているローカライズされた文字列を検索します。
+        ///   Receive toots on your list に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string List {
             get {
@@ -88,7 +88,7 @@ namespace DANMAKU_via_Mastodon.Properties {
         }
         
         /// <summary>
-        ///   Local Timeline に類似しているローカライズされた文字列を検索します。
+        ///   from local timeline に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string LocalTimeline {
             get {
@@ -97,7 +97,7 @@ namespace DANMAKU_via_Mastodon.Properties {
         }
         
         /// <summary>
-        ///   Public に類似しているローカライズされた文字列を検索します。
+        ///   Receive all public toots に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string Public {
             get {
@@ -115,7 +115,7 @@ namespace DANMAKU_via_Mastodon.Properties {
         }
         
         /// <summary>
-        ///   Receive tweets containing specific words に類似しているローカライズされた文字列を検索します。
+        ///   Receive toots of your user timeline に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string User {
             get {

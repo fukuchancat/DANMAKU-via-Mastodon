@@ -35,7 +35,7 @@ namespace DANMAKU_via_Mastodon
                 return;
             }
             Tokens tokens = new Tokens(Default.Instance, Default.AccessToken, Default.ClientId, Default.ClientSecret);
-            ListComboBox.ItemsSource = await tokens.Lists.GetAsync();
+            ListComboBox.ItemsSource = await tokens.Lists.GetAsync(); // get lists
         }
 
         /// <summary>
@@ -75,10 +75,14 @@ namespace DANMAKU_via_Mastodon
         /// <param name="e"></param>
         protected override void OnClosed(EventArgs e)
         {
+            // save settings
             Default.Save();
+
+            // Re-open main window
             MainWindow window = new MainWindow();
             Application.Current.MainWindow = window;
             window.Show();
+
             base.OnClosed(e);
         }
     }

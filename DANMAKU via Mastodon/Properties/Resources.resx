@@ -118,24 +118,24 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="FederatedTimeline" xml:space="preserve">
-    <value>Federated Timeline</value>
+    <value>from federated timeline</value>
   </data>
   <data name="Hashtag" xml:space="preserve">
-    <value>Receive tweets of your timeline</value>
+    <value>Receive toots containing a specific hashtag</value>
   </data>
   <data name="List" xml:space="preserve">
-    <value>List</value>
+    <value>Receive toots on your list</value>
   </data>
   <data name="LocalTimeline" xml:space="preserve">
-    <value>Local Timeline</value>
+    <value>from local timeline</value>
   </data>
   <data name="Public" xml:space="preserve">
-    <value>Public</value>
+    <value>Receive all public toots</value>
   </data>
   <data name="ReAuth" xml:space="preserve">
     <value>Mastodon Re-Authentication</value>
   </data>
   <data name="User" xml:space="preserve">
-    <value>Receive tweets containing specific words</value>
+    <value>Receive toots of your user timeline</value>
   </data>
 </root>
