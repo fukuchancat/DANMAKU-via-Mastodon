@@ -45,16 +45,23 @@ namespace DANMAKU_via_Mastodon
         /// <param name="e"></param>
         private void ReAuthButton_Click(object sender, RoutedEventArgs e)
         {
-            do
+            // Early return if Cancel button is pressed immediately
+            if (!new InstanceInputBox().ShowDialog().GetValueOrDefault(true))
             {
-                do
+                return;
+            }
+
+            // Update credentials
+            while (string.IsNullOrEmpty(Default.Instance) || string.IsNullOrEmpty(Default.AccessToken) || string.IsNullOrEmpty(Default.ClientId) || string.IsNullOrEmpty(Default.ClientSecret))
+            {
+                while (string.IsNullOrEmpty(Default.Instance) || string.IsNullOrEmpty(Default.ClientId) || string.IsNullOrEmpty(Default.ClientSecret))
                 {
                     new InstanceInputBox().ShowDialog();
                 }
-                while (string.IsNullOrEmpty(Default.Instance) || string.IsNullOrEmpty(Default.ClientId) || string.IsNullOrEmpty(Default.ClientSecret));
                 new CodeInputBox().ShowDialog();
             }
-            while (string.IsNullOrEmpty(Default.Instance) || string.IsNullOrEmpty(Default.AccessToken) || string.IsNullOrEmpty(Default.ClientId) || string.IsNullOrEmpty(Default.ClientSecret));
+
+            // Update lists
             InitializeLists();
         }
 

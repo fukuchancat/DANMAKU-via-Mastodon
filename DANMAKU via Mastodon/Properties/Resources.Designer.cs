@@ -61,6 +61,24 @@ namespace DANMAKU_via_Mastodon.Properties {
         }
         
         /// <summary>
+        ///   Please enter your authorization code. に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string EnterCode {
+            get {
+                return ResourceManager.GetString("EnterCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Please enter the instance to log in. (e.g., pawoo.net, mstdn.jp.) に類似しているローカライズされた文字列を検索します。
+        /// </summary>
+        public static string EnterInstance {
+            get {
+                return ResourceManager.GetString("EnterInstance", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   from federated timeline に類似しているローカライズされた文字列を検索します。
         /// </summary>
         public static string FederatedTimeline {

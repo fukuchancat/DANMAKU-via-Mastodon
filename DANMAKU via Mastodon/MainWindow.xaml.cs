@@ -13,7 +13,6 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using TootNet;
-using TootNet.Objects;
 using TootNet.Streaming;
 using static DANMAKU_via_Mastodon.Properties.Settings;
 
@@ -69,7 +68,11 @@ namespace DANMAKU_via_Mastodon
             {
                 while (string.IsNullOrEmpty(Default.Instance) || string.IsNullOrEmpty(Default.ClientId) || string.IsNullOrEmpty(Default.ClientSecret))
                 {
-                    new InstanceInputBox().ShowDialog();
+                    // Abort if Cancel is pressed in instance input box
+                    if (!new InstanceInputBox().ShowDialog().GetValueOrDefault(true))
+                    {
+                        Environment.Exit(0);
+                    }
                 }
                 new CodeInputBox().ShowDialog();
             }
