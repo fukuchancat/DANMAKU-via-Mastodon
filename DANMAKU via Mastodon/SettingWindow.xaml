@@ -12,6 +12,7 @@
 		<local:InverseBooleanConverter x:Key="InverseBool" />
 		<local:EnumToBooleanConverter x:Key="EnumToBool" />
 		<local:StringToFontFamilyConverter x:Key="StringToFontFamily" />
+		<BooleanToVisibilityConverter x:Key="BooleanToVisibility" />
 		<properties:Settings x:Key="Settings" />
 	</Window.Resources>
 	<Grid Margin="3">
@@ -69,7 +70,7 @@
 						<TextBlock Margin="0,0,5,0">#</TextBlock>
 						<TextBox IsEnabled="{Binding IsChecked, ElementName=Hashtag}" Grid.Column="1">
 							<TextBox.Text>
-								<Binding Mode="TwoWay" Path="Query">
+								<Binding Mode="TwoWay" Path="Default.Tag" Source="{StaticResource Settings}">
 									<Binding.ValidationRules>
 										<local:EmptyValidationRule ValidatesOnTargetUpdated="True" />
 									</Binding.ValidationRules>
@@ -93,24 +94,11 @@
 							<Binding Path="Default.StreamingType" Source="{StaticResource Settings}" Converter="{StaticResource EnumToBool}" ConverterParameter="{x:Static streaming:StreamingType.List}"/>
 						</RadioButton.IsChecked>
 					</RadioButton>
-					<TextBox Margin="20,5,0,0" IsEnabled="{Binding IsChecked, ElementName=List}">
-						<TextBox.Text>
-							<Binding Mode="TwoWay" Path="Query">
-								<Binding.ValidationRules>
-									<local:EmptyValidationRule ValidatesOnTargetUpdated="True" />
-								</Binding.ValidationRules>
-							</Binding>
-						</TextBox.Text>
-						<TextBox.Style>
-							<Style TargetType="{x:Type TextBox}">
-								<Style.Triggers>
-									<Trigger Property="IsEnabled" Value="False">
-										<Setter Property="Background" Value="{DynamicResource {x:Static SystemColors.ControlBrushKey}}"/>
-									</Trigger>
-								</Style.Triggers>
-							</Style>
-						</TextBox.Style>
-					</TextBox>
+					<ComboBox x:Name="ListComboBox" Margin="20,5,0,0" DisplayMemberPath="Title" SelectedValuePath="Id">
+						<ComboBox.SelectedValue>
+							<Binding Path="Default.List" Source="{StaticResource Settings}"/>
+						</ComboBox.SelectedValue>
+					</ComboBox>
 				</StackPanel>
 			</StackPanel>
 		</Border>

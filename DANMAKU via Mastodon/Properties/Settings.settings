@@ -35,8 +35,8 @@
     <Setting Name="Color" Type="System.String" Scope="User">
       <Value Profile="(Default)">White</Value>
     </Setting>
-    <Setting Name="List" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+    <Setting Name="List" Type="System.Int64" Scope="User">
+      <Value Profile="(Default)">0</Value>
     </Setting>
     <Setting Name="Local" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>

@@ -157,10 +157,10 @@ namespace DANMAKU_via_Mastodon.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string List {
+        [global::System.Configuration.DefaultSettingValueAttribute("0")]
+        public long List {
             get {
-                return ((string)(this["List"]));
+                return ((long)(this["List"]));
             }
             set {
                 this["List"] = value;

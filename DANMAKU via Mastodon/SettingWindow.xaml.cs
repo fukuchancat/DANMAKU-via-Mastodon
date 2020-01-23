@@ -4,7 +4,9 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Media;
+using TootNet;
 using static DANMAKU_via_Mastodon.Properties.Settings;
+using Application = System.Windows.Application;
 
 namespace DANMAKU_via_Mastodon
 {
@@ -20,6 +22,20 @@ namespace DANMAKU_via_Mastodon
         {
             Application.Current.MainWindow.Close(); // Close main window
             InitializeComponent();
+            InitializeLists();
+        }
+
+        /// <summary>
+        /// Initialize lists combobox items
+        /// </summary>
+        private async void InitializeLists()
+        {
+            if (string.IsNullOrEmpty(Default.Instance) || string.IsNullOrEmpty(Default.AccessToken) || string.IsNullOrEmpty(Default.ClientId) || string.IsNullOrEmpty(Default.ClientSecret))
+            {
+                return;
+            }
+            Tokens tokens = new Tokens(Default.Instance, Default.AccessToken, Default.ClientId, Default.ClientSecret);
+            ListComboBox.ItemsSource = await tokens.Lists.GetAsync();
         }
 
         /// <summary>
@@ -39,6 +55,7 @@ namespace DANMAKU_via_Mastodon
                 new CodeInputBox().ShowDialog();
             }
             while (string.IsNullOrEmpty(Default.Instance) || string.IsNullOrEmpty(Default.AccessToken) || string.IsNullOrEmpty(Default.ClientId) || string.IsNullOrEmpty(Default.ClientSecret));
+            InitializeLists();
         }
 
         /// <summary>
@@ -73,13 +90,7 @@ namespace DANMAKU_via_Mastodon
     {
         public override ValidationResult Validate(object value, CultureInfo cultureInfo)
         {
-            string str = Convert.ToString(value);
-
-            if (string.IsNullOrWhiteSpace(str))
-            {
-                return new ValidationResult(false, "required");
-            }
-            return ValidationResult.ValidResult;
+            return string.IsNullOrWhiteSpace(value.ToString()) ? new ValidationResult(false, "required") : ValidationResult.ValidResult;
         }
     }
 

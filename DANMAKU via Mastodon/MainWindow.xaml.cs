@@ -13,6 +13,7 @@ using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Animation;
 using TootNet;
+using TootNet.Objects;
 using TootNet.Streaming;
 using static DANMAKU_via_Mastodon.Properties.Settings;
 
@@ -84,12 +85,6 @@ namespace DANMAKU_via_Mastodon
             // Issue token
             Tokens tokens = CreateTokens();
 
-            // if the query is empty, connect to user timeline
-            if ((Default.StreamingType == StreamingType.Hashtag && string.IsNullOrWhiteSpace(Default.Tag)) || (Default.StreamingType == StreamingType.List && string.IsNullOrWhiteSpace(Default.List)))
-            {
-                Default.StreamingType = StreamingType.User;
-            }
-
             // Create observable according to the settings
             IObservable<StreamingMessage> observable;
             switch (Default.StreamingType)
@@ -118,9 +113,10 @@ namespace DANMAKU_via_Mastodon
             // start streaming
             return observable
                 .SubscribeOn(ThreadPoolScheduler.Instance)
+                .Retry(1)
                 .Where(x => x.Type == StreamingMessage.MessageType.Status)
                 .Select(x => ToPlainText(x.Status.Content))
-                .Subscribe(t => FireLabel(t));
+                .Subscribe(t => FireLabel(t), e => Default.StreamingType = StreamingType.User);
         }
 
         /// <summary>
