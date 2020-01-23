@@ -21,7 +21,7 @@ See [Releases](https://github.com/ia15076/DANMAKU-via-Mastodon/releases)
 ## Usage
 
 1. Run DANMAKU via Mastodon.exe
-2. Authentication is required on first boot. Please enter your PIN code then.
+2. Authentication is required on first boot. Please enter your Authentication code then.
 3. To exit, right click on the tray icon and select "Exit".
 
 If you want to change settings of toots to receive or the account to use or fonts, right click on the tray icon and select "Settings".
